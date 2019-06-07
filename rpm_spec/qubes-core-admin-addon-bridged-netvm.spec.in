@@ -1,0 +1,32 @@
+Name:		qubes-core-admin-addon-bridged-netvm
+Version:	@VERSION@
+Release:	1%{?dist}
+Summary:	qubes-core-admin extension for handling Bridged NetVM
+
+Group:		Qubes
+License:	GPLv2+
+URL:		https://www.qubes-os.org
+Source0:    %{name}-%{version}.tar.gz
+
+BuildArch:	noarch
+BuildRequires:	python%{python3_pkgversion}-devel
+
+%description
+qubes-core-admin extension for handling Bridged NetVM
+
+%prep
+%setup -q
+
+%build
+make %{?_smp_mflags}
+
+%install
+%make_install
+
+%files
+%doc README.md
+%{python3_sitelib}/qubes_bridged_netvm-*.egg-info
+%{python3_sitelib}/qubes_bridged_netvm
+
+%changelog
+
