@@ -25,6 +25,7 @@ make %{?_smp_mflags}
 
 %files
 %doc README.md
+/etc/qubes/templates/libvirt/xen-dist.xml
 %{python3_sitelib}/qubes_bridged_netvm-*.egg-info
 %{python3_sitelib}/qubes_bridged_netvm
 

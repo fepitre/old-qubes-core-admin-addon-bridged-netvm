@@ -1,0 +1,12 @@
+{% extends "libvirt/xen.xml" %}
+{% block devices %}
+{{ super() }}
+{% if vm.features.get('bridge_backenddomain', False) and vm.features.get('bridge_name', False) and vm.features.get('bridge_mac', False) != vm.mac %}
+<interface type="bridge">
+    <source bridge="{{ vm.features['bridge_name'] }}" />
+    <mac address="{{ vm.features['bridge_mac'] }}" />
+    <backenddomain name="{{ vm.features['bridge_backenddomain'] }}" />
+    <script path="vif-bridge" />
+</interface>
+{% endif %}
+{% endblock %}
