@@ -21,6 +21,12 @@
 
 import qubes.ext
 import asyncio
+import re
+
+
+def check_mac(mac):
+    mac_regex = re.compile('^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$')
+    return bool(re.match(mac_regex, mac))
 
 
 class QubesBridgedNetVMExtension(qubes.ext.Extension):
@@ -40,3 +46,15 @@ class QubesBridgedNetVMExtension(qubes.ext.Extension):
             if bridge_backenddomain.qid != 0:
                 if not bridge_backenddomain.is_running():
                     yield from bridge_backenddomain.start(start_guid=start_guid, notify_function=None)
+
+    @qubes.ext.handler('domain-qdb-create')
+    def on_qdb_create(self, vm, event):
+        mac = vm.features.get('bridge_mac', '').lower()
+        ip = vm.features.get('bridge_ip', '')
+        netmask = vm.features.get('bridge_netmask', '')
+        gateway = vm.features.get('bridge_gateway', '')
+
+        if check_mac(mac):
+            vm.untrusted_qdb.write('/net-config/' + mac + '/ip', ip)
+            vm.untrusted_qdb.write('/net-config/' + mac + '/netmask', netmask)
+            vm.untrusted_qdb.write('/net-config/' + mac + '/gateway', gateway)
